@@ -11,3 +11,6 @@
 - 리포지토리 인터페이스 정의
   - TodoRepository: TodoEntity를 관리하는 JPA 리포지토리 인터페이스
   - UserRepository: UserEntity를 대상으로 DB 접근을 수행하는 JPA 리포지토리 인터페이스
+- 서비스 클래스 정의
+  - TodoService: 할 일(TodoEntity)에 대한 비즈니스 로직을 처리하는 서비스 클래스
+  - UserService: 사용자 등록 및 인증을 처리하는 서비스 클래스
