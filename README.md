@@ -14,3 +14,5 @@
 - 서비스 클래스 정의
   - TodoService: 할 일(TodoEntity)에 대한 비즈니스 로직을 처리하는 서비스 클래스
   - UserService: 사용자 등록 및 인증을 처리하는 서비스 클래스
+- JWT 관리 클래스 정의
+  - TokenProvider: JWT 토큰을 생성하고 검증, 사용자 ID 추출하는 역활을 수행하는 클래스
