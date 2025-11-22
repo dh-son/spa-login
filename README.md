@@ -16,3 +16,6 @@
   - UserService: 사용자 등록 및 인증을 처리하는 서비스 클래스
 - JWT 관리 클래스 정의
   - TokenProvider: JWT 토큰을 생성하고 검증, 사용자 ID 추출하는 역활을 수행하는 클래스
+- JWT 기반 인증 처리 필터 클래스 정의
+  - JwtAuthenticationFilter: HTTP 요청에서 JWT 토큰을 추출하고 인증 정보를 설정하는 필터 클래스
+    - OncePerRequestFilter: HTTP 요청당 한 번만 실행되는 필터를 만들 수 있음
