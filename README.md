@@ -19,3 +19,6 @@
 - JWT 기반 인증 처리 필터 클래스 정의
   - JwtAuthenticationFilter: HTTP 요청에서 JWT 토큰을 추출하고 인증 정보를 설정하는 필터 클래스
     - OncePerRequestFilter: HTTP 요청당 한 번만 실행되는 필터를 만들 수 있음
+- 스프링 시큐리티 설정
+  - WebSecurityConfig: 애플리케이션의 웹 보안을 구성하는 설정 클래스
+    - Stateless, JWT 필터 추가, 403 처리는 핵심 설정
