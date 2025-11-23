@@ -22,3 +22,6 @@
 - 스프링 시큐리티 설정
   - WebSecurityConfig: 애플리케이션의 웹 보안을 구성하는 설정 클래스
     - Stateless, JWT 필터 추가, 403 처리는 핵심 설정
+- 컨트롤러 클래스 정의
+  - TodoController: 사용자 할 일(Todo) 목록을 CRUD 처리하는 REST 컨트롤러
+  - UserController: 사용자 회원 가입 및 로그인 처리를 담당하는 컨트롤러
