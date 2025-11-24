@@ -17,6 +17,6 @@ public interface TodoRepository extends JpaRepository<TodoEntity, Long> {
     List<TodoEntity> findByUserId(Long userId);
 
     // JPQL을 사용하여 UserId로 단일 TodoEntity를 조회하는 커스텀 쿼리
-    @Query("SELECT t FROM TodoEntity t WHERE t.userId =?1 userId")
+    @Query("SELECT t FROM TodoEntity t WHERE t.userId = ?1")
     TodoEntity findByUserIdQuery(Long userId);
 }
