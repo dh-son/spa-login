@@ -25,3 +25,64 @@
 - 컨트롤러 클래스 정의
   - TodoController: 사용자 할 일(Todo) 목록을 CRUD 처리하는 REST 컨트롤러
   - UserController: 사용자 회원 가입 및 로그인 처리를 담당하는 컨트롤러
+
+## 2.일반 로그인 기능
+- 회원 가입
+  - 사용자가 회원가입 페이지에 접근
+  - 회원가입 폼 작성 및 제출
+  - API 요청 발생
+  - Spring Controller에서 회원 가입 처리
+  - DB 저장 (중복 체크 포함)
+  - 실제 DB 테이블 구조
+  - 응답 생성 및 전달
+  - React에서 로그인 페이지로 이동
+- 일반 로그인
+  - 로그인 폼 제출
+  - 로그인 API 호출
+  - 로그인 요청 처리
+  - 비밀번호 검증
+  - JWT 토큰 발급 및 Client에 전달
+  - React에서 JWT 저장
+  - API 요청 시 토큰 포함
+  - JWT 검증 및 사용자 인증
+  - 인증된 사용자 정보 사용
+- 할 일 추가
+  - 사용자가 할 일을 입력하고 버튼 클릭
+  - 부모(App)에서 API 요청 실행
+  - 실제 API 요청 전송
+  - Spring Boot Controller에서 요청 받기
+  - DB에 저장 처리
+  - DB 저장 후 응답 데이터
+  - React에서 응답 받아 상태 업데이트
+  - 전체 목록 제렌더링
+- 할 일 목록 조회
+  - React 앱 실핼 시 목록 요청
+  - API 요청 처리 (JWT 토큰 포함)
+  - Spring Security에서 JWT 인증
+  - Controller에서 목록 처리
+  - Service에서 목록 조회
+  - Repository에서 실제 DB 조회
+  - Client에 응답 후 렌더링
+- 할 일 수정
+  - 사용자가 할 일 텍스트 수정
+  - API 호출로 수정 요청 전송
+  - HTTP 요청 내부 처리
+  - JWT 인증 필터에서 사용자 검증
+  - Controller에서 수정 처리
+  - Service에서 DB 수정
+  - DB에서 자동 저장
+  - Client에서 목록 갱신
+- 할 일 삭제
+  - 사용자가 삭제 버튼 클릭
+  - Backend에 삭제 요청 보내기
+  - API 요청 처리
+  - JWT 인증 처리
+  - Controller에서 삭제 처리
+  - Service에서 DB 삭제 로직 수행
+  - Repository에서 실제 삭제 처리
+  - React에서 응답 받은 목록 렌더링
+- 로그아웃 (Client에서만 처리)
+  - 사용자가 로그아웃 버튼 클릭
+  - 토큰 삭제 및 로그인 페이지로 이동
+  - 로그아웃 후 인증된 페이지에 접근
+  - 인증 실패 시 자동 리다이렉트 (403 error)
