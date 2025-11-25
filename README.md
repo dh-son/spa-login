@@ -93,5 +93,10 @@
     - 소셜 로그인 과정에서 전달 받은 사용자 정보를 우리 서비스에 받에 변환해서 담아주는 클래스
     - OAuth2UserService를 구현한 클래스 내부에서 사용
     - OAuth 인증 후 사용자 정보를 등록하거나 확인할 때 자주 사용
-- 
+- 소셜 로그인 사용자 정보 클래스
+  - CustomUser:
+    - OAuth2 로그인 사용자 정보를 담는 CustomUser 클래스
+    - Spirng Security의 DefaultOAuth2User를 확장하여 사용자 ID, 이메일, 사용자명을 추가로 보관
+    - 소셜 로그인 이후 인증된 사용자 정보를 우리 서비스의 요구사항에 맞게 가공 또는 저장
+    - DefaultOAuth2User: Spring Security가 소셜 로그인을 처리할 때 사용자 정보를 담기 위해 기본으로 사용하는 클래스
                      
