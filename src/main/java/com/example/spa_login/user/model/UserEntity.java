@@ -31,4 +31,6 @@ public class UserEntity {
 
     private String role; // 사용자 역활 (예: ROLE_USER, ROLE_ADMIN)
 
+    private String authProvider; // OAuth 제공자 정보
+
 }
