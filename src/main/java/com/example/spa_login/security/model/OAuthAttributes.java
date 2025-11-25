@@ -1,0 +1,54 @@
+package com.example.spa_login.security.model;
+
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.Map;
+
+/**
+ * 외부 서비스에서 받아온 사용자 정보를 애플리케이션에서 사용할 수 있도록 변환해주는 클래스
+ * OAuth2UserService를 구현한 클래스 내부에서 사용
+ * 소셜 로그인 과정에서 전달 받은 사용자 정보를 우리 서비스에 받에 변환해서 담아주는 클래스
+ * OAuth 인증 후 사용자 정보를 등록하거나 확인할 때 자주 사용
+ */
+@Getter
+public class OAuthAttributes {
+
+    // OAuth2 로그인 시 전달받는 사용자 정보
+    private Map<String, Object> attributes; // OAuth2 제공자에서 가져온 모든 사용자 속성
+    private String nameAttributeKey; // 사용자 식별에 사용할 키 이름 (ex. sub, id 등)
+    private String name; // 사용자 이름
+    private String email; // 사용자 이메일
+    private String picture; // 프로필 사진 URL
+    private String id; // OAuth 사용자 고유 ID (실제 유저 식별 값)
+
+    @Builder
+    public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture, String id) {
+        this.attributes = attributes;
+        this.nameAttributeKey = nameAttributeKey;
+        this.name = name;
+        this.email = email;
+        this.picture = picture;
+        this.id = id;
+    }
+
+    // OAuth 제공자 구분에 따라 처리할 메서드
+    public static OAuthAttributes of(String registrationId,
+                                     String userNameAttributeName,
+                                     Map<String, Object> attributes) {
+        return ofGoogle(userNameAttributeName, attributes);
+    }
+
+    // Google OAuth 사용자 정보로부터 OAuthAttributes 객체를 생성하는 메서드
+    private static OAuthAttributes ofGoogle(String userNameAttributeName,
+                                            Map<String, Object> attributes) {
+        return OAuthAttributes.builder()
+                .name((String) attributes.get("name"))
+                .email((String) attributes.get("email"))
+                .picture((String) attributes.get("picture"))
+                .id((String) attributes.get(userNameAttributeName)) // userNameAttributeName == "sub"
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+    }
+}
