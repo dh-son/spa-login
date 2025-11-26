@@ -103,5 +103,10 @@
   - CustomOAuth2UserService
     - Spring Security OAuth2 로그인 시 사용자를 처리하는 핵심 서비스 클래스
     - 소셜 로그인 성공 후 자동으로 호출되어, 사용자 정보를 가져오고 가공해서 CustomUser 객체로 반환
-    - OAuth2UserService: Spring Security가 소셜 로그인 처리 중, OAuth2 서버로부터 사용자 정보를 받아왔을때 호출하는 서비스 역활 
+    - OAuth2UserService: Spring Security가 소셜 로그인 처리 중, OAuth2 서버로부터 사용자 정보를 받아왔을때 호출하는 서비스 역활
+- 리디렉션 URL을 쿠키에 저장하는 클래스
+  - RedirectUrlCookieFilter
+    - Spring Security에서 소셜 로그인 처리할 때, Client가 요청한 리디렉션 URL을 쿠키에 저장하는 용도로 사용
+    - 소셜 로그인 요청 시 Client가 보낸 redirect_url 파라미터를 쿠키로 저장해 놓고, 로그인 완료 후 해당 URL로 리다이렉트 하기 위한 기반 마련
+    - 소셜 로그인 시작 시 Frontend에서 전달된 redirect_url을 쿠키에 저장해주는 필터
                      
