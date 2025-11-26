@@ -1,11 +1,15 @@
 package com.example.spa_login.security.config;
 
+import com.example.spa_login.security.CustomOAuth2UserService;
 import com.example.spa_login.security.jwt.JwtAuthenticationFilter;
+import com.example.spa_login.security.jwt.OAuthSuccessHandler;
+import com.example.spa_login.security.jwt.RedirectUrlCookieFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -22,10 +26,27 @@ import java.util.List;
 @EnableWebSecurity // Spring Security 활성화
 public class WebSecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // JWT 인증 필터 의존성 주입
+    // JWT 기반 인증을 처리할 필터
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+    // 사용자 정보를 로드할 사용자 정의 OAuth2 서비스
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    // OAuth2 로그인 성공 시 동작할 핸들러
+    private final OAuthSuccessHandler oAuthSuccessHandler;
+
+    // 리다이렉트 URI 정보를 쿠키에 저장하는 필터
+    private final RedirectUrlCookieFilter redirectUrlCookieFilter;
+
+    // 생성자 주입을 통한 의존성 설정
+    public WebSecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+                             CustomOAuth2UserService customOAuth2UserService,
+                             OAuthSuccessHandler oAuthSuccessHandler,
+                             RedirectUrlCookieFilter redirectUrlCookieFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.oAuthSuccessHandler = oAuthSuccessHandler;
+        this.redirectUrlCookieFilter = redirectUrlCookieFilter;
     }
 
     // 보안 필터 체인 정의: 인증, 인가, 세션, 예외 처리, JWT 필터 설정
@@ -33,7 +54,7 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(cors -> {}) // CORS 설정 활성화
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (REST API 서버에서 주로 사용
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (REST API 서버에서 주로 사용, JWT 기반으로 불필요)
                 .httpBasic(httpBasic -> httpBasic.disable()) // 기본 인증 방식 비활성화
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // // 세션 사용 안함 (JWT 기반 인증)
@@ -44,10 +65,20 @@ public class WebSecurityConfig {
                 )
                 // JWT 필터를 UsernamePasswordAuthenticationFilter 이후에 실행되도록 추가
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // OAuth2 로그인 설정
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService) // OAuth2 사용자 정보 로딩
+                        )
+                        .successHandler(oAuthSuccessHandler) // 로그인 성공 시 커스텀 핸들러 실행
+                )
+                // 인증 실패 시 403 Forbidden 반환
                 .exceptionHandling(exception -> exception
-                        // 인증 실패 시 403 Forbidden 반환
                         .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
-                );
+                )
+                // 리다이렉트 URl 쿠키 필터를 OAuth2 리다이렉트 필터 이전에 실행
+                .addFilterBefore(redirectUrlCookieFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+        ;
 
         return http.build(); // 필터 체인 객체 반환
     }

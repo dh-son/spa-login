@@ -100,19 +100,24 @@
     - 소셜 로그인 이후 인증된 사용자 정보를 우리 서비스의 요구사항에 맞게 가공 또는 저장
     - DefaultOAuth2User: Spring Security가 소셜 로그인을 처리할 때 사용자 정보를 담기 위해 기본으로 사용하는 클래스
 - 소셜 로그인 사용자 정보와 회원 가입 처리 클래스
-  - CustomOAuth2UserService
+  - CustomOAuth2UserService:
     - Spring Security OAuth2 로그인 시 사용자를 처리하는 핵심 서비스 클래스
     - 소셜 로그인 성공 후 자동으로 호출되어, 사용자 정보를 가져오고 가공해서 CustomUser 객체로 반환
     - OAuth2UserService: Spring Security가 소셜 로그인 처리 중, OAuth2 서버로부터 사용자 정보를 받아왔을때 호출하는 서비스 역활
 - 리디렉션 URL을 쿠키에 저장하는 클래스
-  - RedirectUrlCookieFilter
+  - RedirectUrlCookieFilter:
     - Spring Security에서 소셜 로그인 처리할 때, Client가 요청한 리디렉션 URL을 쿠키에 저장하는 용도로 사용
     - 소셜 로그인 요청 시 Client가 보낸 redirect_url 파라미터를 쿠키로 저장해 놓고, 로그인 완료 후 해당 URL로 리다이렉트 하기 위한 기반 마련
     - 소셜 로그인 시작 시 Frontend에서 전달된 redirect_url을 쿠키에 저장해주는 필터
     - OncePerRequestFilter: 요청일 들어올 때마다 한번만 실행되도록 보장
 - 사용자 정의 성공 핸들러
-  - OAuthSuccessHandler
+  - OAuthSuccessHandler:
     - 소셜 로그인 성공 후 동작하는 커스텀 성공 핸들러 클래스
     - 로그인 성공 -> JWT 토큰 생성 -> Client가 요청한 리디렉션 URL로 토큰을 포함하여 리다이렉트
     - SimpleUrlAuthenticationSuccessHandler: OAuth2 로그인 성공 시 처리 로직 담당 클래스
+- 스프링 시큐리티 설정
+  - WebSecurityConfig: OAuth2 로그인 설정
+    - CustomOAuth2UserService: 사용자 정보를 로드할 사용자 정의 OAuth2 서비스
+    - OAuthSuccessHandler: OAuth2 로그인 성공 시 동작할 핸들러
+    - RedirectUrlCookieFilter: 리다이렉트 URI 정보를 쿠키에 저장하는 필터
                      
