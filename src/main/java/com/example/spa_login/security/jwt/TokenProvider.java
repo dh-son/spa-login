@@ -1,10 +1,12 @@
 package com.example.spa_login.security.jwt;
 
+import com.example.spa_login.security.model.CustomUser;
 import com.example.spa_login.user.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -52,6 +54,20 @@ public class TokenProvider {
                 .getPayload(); // Payload(Claims) 추출
 
         return claims.getSubject(); // 사용자 ID(subject) 반환
+    }
+
+    // 소셜 로그인 인증 정보를 기반으로 JWT 토큰 생성
+    public String create(final Authentication authentication) {
+        CustomUser userPrincipal = (CustomUser) authentication.getPrincipal();
+
+        Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+
+        return Jwts.builder()
+                .subject(userPrincipal.getName())
+                .issuedAt(new Date())
+                .expiration(expiryDate)
+                .signWith(SIGNING_KEY, Jwts.SIG.HS512)
+                .compact();
     }
 
     // 사용자 ID만을 기반으로 토큰 생성 (예: OAuth 사용자 등): 로그인 이후 사용자 정보를 간단히 전달
