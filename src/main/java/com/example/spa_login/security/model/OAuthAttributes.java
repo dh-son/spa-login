@@ -44,7 +44,30 @@ public class OAuthAttributes {
             return ofKakao("id", attributes);
         }
 
+        if (registrationId.equals("github")) {
+            return ofGitHub("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
+    }
+
+    // GitHub 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
+    private static OAuthAttributes ofGitHub(String userNameAttributeName,
+                                           Map<String, Object> attributes) {
+        String username = (String) attributes.get("login");
+        Integer id = (Integer) attributes.get("id");
+        String nickname = username;
+        String profileImageUrl = (String) attributes.get("avatar_url");
+        String email = (String) attributes.get("email");
+
+        return OAuthAttributes.builder()
+                .name(nickname)
+                .email(email)
+                .picture(profileImageUrl)
+                .id("" + id)
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
     }
 
     // 카카오 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
