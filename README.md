@@ -149,3 +149,6 @@
   - OAuthAttributes: 네이버 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드 추가
 - 카카오 소셜 로그인
   - OAuthAttributes: 카카오 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드 추가
+- 깃허브 소셜 로그인
+  - OAuthAttributes: 깃허브 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드 추가
+  - CustomOAuth2UserService: GitHub email 직접 조회 추가
