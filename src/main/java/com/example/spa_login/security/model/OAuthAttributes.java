@@ -40,10 +40,39 @@ public class OAuthAttributes {
             return ofNaver("id", attributes);
         }
 
+        if (registrationId.equals("kakao")) {
+            return ofKakao("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
     }
 
-    // 네이버 제공자의 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
+    // 카카오 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
+    private static OAuthAttributes ofKakao(String userNameAttributeName,
+                                           Map<String, Object> attributes) {
+        Long id = (Long)attributes.get("id");
+
+        // 카카오 계정 정보 가져오기
+        Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
+
+        // 프로필 정보 추출
+        Map<String , Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
+        String nickname = (String) profile.get("nickname");
+        String profileImageUrl = (String) profile.get("profile_image_url");
+
+        String email = (String) kakaoAccount.get("email");
+
+        return OAuthAttributes.builder()
+                .name(nickname)
+                .email(email)
+                .picture(profileImageUrl)
+                .id("" + id)
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
+    }
+
+    // 네이버 로그인 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
     private static OAuthAttributes ofNaver(String userNameAttributeName,
                                            Map<String, Object> attributes) {
         // 네이버 응답의 내부 'response' 필드에서 사용자 정보 추출
