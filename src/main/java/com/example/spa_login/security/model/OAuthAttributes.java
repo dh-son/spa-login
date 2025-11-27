@@ -36,7 +36,27 @@ public class OAuthAttributes {
     public static OAuthAttributes of(String registrationId,
                                      String userNameAttributeName,
                                      Map<String, Object> attributes) {
+        if (registrationId.equals("naver")) {
+            return ofNaver("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
+    }
+
+    // 네이버 제공자의 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드
+    private static OAuthAttributes ofNaver(String userNameAttributeName,
+                                           Map<String, Object> attributes) {
+        // 네이버 응답의 내부 'response' 필드에서 사용자 정보 추출
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return OAuthAttributes.builder()
+                .name((String) response.get("name"))
+                .email((String) response.get("email"))
+                .picture((String) response.get("profile_image"))
+                .id((String) response.get(userNameAttributeName))
+                .attributes(response)
+                .nameAttributeKey(userNameAttributeName)
+                .build();
     }
 
     // Google OAuth 사용자 정보로부터 OAuthAttributes 객체를 생성하는 메서드

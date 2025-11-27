@@ -145,3 +145,5 @@
   8. 백엔드에서 토큰 인증: JwtAuthenticationFilter.java
     - JwtAuthenticationFilter.java에서 토큰을 파싱하고 검증
     - Controller에서 '@AuthenticationPrincipal String userId' 와 같이 주입받아서 사용자의 정보를 활용
+- 네이버 소셜 로그인
+  - OAuthAttributes: 네이버 제공자의 사용자 정보를 OAuthAttributes 객체로 변환하는 메서드 추가
