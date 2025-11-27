@@ -120,4 +120,28 @@
     - CustomOAuth2UserService: 사용자 정보를 로드할 사용자 정의 OAuth2 서비스
     - OAuthSuccessHandler: OAuth2 로그인 성공 시 동작할 핸들러
     - RedirectUrlCookieFilter: 리다이렉트 URI 정보를 쿠키에 저장하는 필터
-                     
+- 소셜 로그인 기능 흐름
+  1. 프론트에서 로그인 화면 진입: Login.jsx
+    - /Login 경로에 진입, 구글로 로그인하기 버튼 클릭, handleSocialLogin("google") 함수 호출
+    - socialLogin 함수로 연결
+    - 백엔드의 '/oauth2/authorization/google' 주소로 이동 및 현재 프론트의 주소(로그인 완료 후 다시 돌아올 위치)도 같이 전송
+  2. 백엔드에서 리디렉션 주소 저장: RedirectUrlCookieFilter.java
+    - 백엔드에 요청이 도달하면 RedirectUrlCookieFilter.java에서 redirect_url 값을 읽어서 쿠키에 저장
+      (로그인 처리 종료 후 어디로 다시 리디렉션해야 할지 기억)
+  3. Spring Security를 통한 OAuth 로그인 처리: WebSecurityConfig.java/oauth2Login()
+    - CustomOAuth2UserService: 사용자 정보를 받아옴
+    - OAuthSuccessHandler: 로그인 성공 이후의 처리를 하게 됨
+  4. 사용자 정보 처리 및 저장: CustomOAuth2UserService.java
+    - 구글로부터 받은 사용자 정보를 바탕으로 사용자 정보를 파싱하고 DB에 저장하거나 기존 사용자를 조회
+    - 처음 로그인한 유저는 자동으로 회원가입, 이후에는 기존 정보를 재사용
+  5. JWT 토큰 생성 및 프론트로 리디렉션: OAuthSuccessHandler.java
+    - 로그인 성공 시 JWT 토큰 생성
+    - 토큰은 쿠키에 저장했던 주소로 리디렉션하면서 URL 파라미터로 전달
+  6. 프론트에서 토큰 저장 및 이동
+    - /sociallogin 경로로 이동하면서 URL에 토큰이 포함
+    - SocialLogin.jsx: 이 토큰을 읽어 localStorate에 저장, 홈 화면 '/'로 자동 이동
+  7. API 요청 시 토큰 포함
+    - 사용자가 서버에 API 요청을 보낼 때마다, 이 토큰이 자동으로 포함되도록 ApiService.js에서 설정
+  8. 백엔드에서 토큰 인증: JwtAuthenticationFilter.java
+    - JwtAuthenticationFilter.java에서 토큰을 파싱하고 검증
+    - Controller에서 '@AuthenticationPrincipal String userId' 와 같이 주입받아서 사용자의 정보를 활용
